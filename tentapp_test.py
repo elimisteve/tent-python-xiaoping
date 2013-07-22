@@ -10,14 +10,9 @@ app = TentApp(entity_url)
 
 class TestTentApp(unittest.TestCase):
 
-    def test_discovery(self):
-        app.discover()
-        self.assertTrue(app.new_post)
-
-    def test_registration(self):
-        app.register(app.new_post)
-        self.assertTrue(app.registration_response_header)
-        self.assertTrue(app.registration_response_text)
+    def test_setup(self):
+        app.setup()
+        self.assertTrue(app.registration_attachment)
 
 if __name__ == '__main__':
     sys.argv = sys.argv[:1]
