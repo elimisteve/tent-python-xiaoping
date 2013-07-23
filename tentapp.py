@@ -1,5 +1,6 @@
 import json
 import sys
+import urlparse
 
 import bs4
 import requests
@@ -15,13 +16,18 @@ class TentApp:
 
     def setup(self):
         self.discovery_response = self.discover(self.entity_url)
+        app_info = open('registration.json').read()
         servers_list = self.discovery_response['post']['content']['servers']
         # TODO Should iterate through servers_list
         # in case there's more than one.
         new_post = servers_list[0]['urls']['new_post']
         (self.registration_header,
-         self.registration_attachment) = self.register(new_post)
+         self.registration_attachment) = self.register(app_info, new_post)
+        id_value = self.registration_attachment['post']['id']
+        oauth_auth = servers_list[0]['urls']['oauth_auth']
+        code = self.authorization_request(oauth_auth, id_value)
 
+    # Returns the discovery response attachment as a dictionary.
     def discover(self, entity_url):
         response = requests.get(entity_url)
         # Discovery via header field.
@@ -36,13 +42,23 @@ class TentApp:
             soup = bs4.BeautifulSoup(response.text)
             link = soup.head.link.get('href')
         discovery_string = requests.get(link)
-        # this is a dict
         return json.loads(discovery_string.text)
 
-    def register(self, new_post):
+    # Returns the registration response header as a string
+    # and the response attachment as a dictionary.
+    def register(self, app_info, new_post):
         headers = {'Content-Type': ('application/vnd.tent.post.v0+json;'
                                     ' type="https://tent.io/types/app/v0#"')}
-        json_file = open('registration.json').read()
-        post_creation_response = requests.post(new_post, data=json_file,
+        post_creation_response = requests.post(new_post, data=app_info,
                                                headers=headers)
-        return str(post_creation_response.headers), post_creation_response.text
+        registration_header = str(post_creation_response.headers)
+        registration_attachment = json.loads(post_creation_response.text)
+        return registration_header, registration_attachment
+
+    # Returns the code parameter in the form of a string.
+    def authorization_request(self, oauth_auth, id_value):
+        payload = {'client_id': id_value}
+        response = requests.get(oauth_auth, params=payload)
+        location = response.history[0].headers.get('location')
+        parsed_location = urlparse.urlparse(location)
+        return urlparse.parse_qs(parsed_location.query)['code']

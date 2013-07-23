@@ -4,7 +4,13 @@ Xiaoping is a Python client library for [Tent](https://tent.io) v0.3. I'm writin
 
 # Setup
 
+1. Run the following commands:
+    ```
     $ pip install -r requirements.txt
+    $ cp sample_registration.json registration.json
+    ```
+
+2. Change "redirect_uri" in `registration.json` to a URL under your control.
 
 # Testing
 
