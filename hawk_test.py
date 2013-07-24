@@ -1,10 +1,11 @@
 import unittest
 import urlparse
 
-from hawk import mkheader, mk_normalized_string, mk_mac
+from hawk import mkheader, mk_normalized_string, mk_mac, mk_payload_digest
 
 
-class TestHawk(unittest.TestCase):
+# Note that this currently doesn't test either time stamp or nonce creation.
+class TestAppRequestWithHash(unittest.TestCase):
 
     def setUp(self):
         # Test data
@@ -49,6 +50,17 @@ class TestHawk(unittest.TestCase):
                           attachment_hash=self.attachment_hash,
                           app_id=self.app_id)
         self.assertEquals(header, self.correct_header)
+
+
+class TestStandaloneFunctions(unittest.TestCase):
+
+    def test_mk_payload_digest(self):
+        content_type = 'text/plain'
+        data = 'Thank you for flying Hawk'
+        payload_digest = mk_payload_digest(content_type, data)
+        correct_payload_digest = ('hawk.1.payload\ntext/plain\n'
+                                  'Thank you for flying Hawk\n')
+        self.assertEquals(payload_digest, correct_payload_digest)
 
 if __name__ == '__main__':
     unittest.main()

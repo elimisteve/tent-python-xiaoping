@@ -22,7 +22,7 @@ def mkheader(url, http_method, hawk_id, key, attachment_hash=None, app_id=None,
 
     if not time_stamp:
         n = datetime.datetime.now()
-        time_stamp = str(time.mktime(n.timetuple()))
+        time_stamp = str(int(time.mktime(n.timetuple())))
 
     port = parsed_url.port
     if not port:
@@ -78,3 +78,13 @@ def mk_mac(key, normalized_string):
 
 def mknonce(length=6, chars=(string.ascii_uppercase + string.digits)):
     return ''.join(random.choice(chars) for x in range(length))
+
+
+def mk_payload_digest(content_type, data):
+    return ('hawk.1.payload\n'
+            + content_type + '\n'
+            + data + '\n')
+
+
+def hash_attachment(payload_digest):
+    return base64.b64encode(hashlib.sha256(payload_digest).digest())
