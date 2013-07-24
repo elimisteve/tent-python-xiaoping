@@ -12,13 +12,17 @@ import time
 from urlparse import urlparse
 
 
-def mkheader(url, http_method, hawk_id, key, app_id=None):
+# Nonce and time_stamp are only included as arguments for testing purposes.
+def mkheader(url, http_method, hawk_id, key, attachment_hash=None, app_id=None,
+             nonce=None, time_stamp=None):
 
-    nonce = mknonce(8)
+    if not nonce:
+        nonce = mknonce(8)
     parsed_url = urlparse(url)
 
-    n = datetime.datetime.now()
-    time_stamp = str(time.mktime(n.timetuple()))
+    if not time_stamp:
+        n = datetime.datetime.now()
+        time_stamp = str(time.mktime(n.timetuple()))
 
     port = parsed_url.port
     if not port:
@@ -31,13 +35,22 @@ def mkheader(url, http_method, hawk_id, key, app_id=None):
     if parsed_url.fragment:
         fragment = '#' + parsed_url.fragment
 
-    app = ""
+    hash_str = ''
+    if attachment_hash:
+        hash_str = ", hash=\"" + attachment_hash + "\""
 
+    app = ''
     if app_id:
-        app = ", app=\"" + app_id + "\""  # we need this later in the header
+        app = ", app=\"" + app_id + "\""
+
+    normalized_string = mk_normalized_string(time_stamp, nonce, http_method,
+                                             parsed_url, fragment, port,
+                                             attachment_hash=attachment_hash,
+                                             app_id=app_id)
+    mac = mk_mac(key, normalized_string)
 
     return ('Hawk id="' + hawk_id + '", mac="' + mac + '", ts="'
-            + time_stamp + '", nonce="' + nonce + '"' + app)
+            + time_stamp + '", nonce="' + nonce + '"' + hash_str + app)
 
 
 def mk_normalized_string(time_stamp, nonce, http_method, parsed_url, fragment,
@@ -51,10 +64,10 @@ def mk_normalized_string(time_stamp, nonce, http_method, parsed_url, fragment,
                          + str(port) + "\n")
     if attachment_hash:
         normalized_string += attachment_hash + "\n"
-    normalized_string += "\n"  # we don't use ext
+    normalized_string += "\n"  # We don't use ext.
     if app_id:
         normalized_string += app_id + "\n"
-        normalized_string += "\n"  # this is for dlg
+        normalized_string += "\n"  # This is for dlg.
     return normalized_string
 
 
