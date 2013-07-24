@@ -36,7 +36,10 @@ class TentApp:
             # TODO This should use an actual HTML parsing library.
             left, right = link_header.find('<') + 1, link_header.find('>')
             rel_link = link_header[left:right]
-            link = entity_url + rel_link
+            if rel_link.startswith("http"):
+                link = rel_link
+            else:
+                link = entity_url + rel_link
         # Discovery via HTML doc.
         else:
             soup = bs4.BeautifulSoup(response.text)
