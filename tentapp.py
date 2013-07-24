@@ -48,7 +48,10 @@ class TentApp:
         # Discovery via header field.
         if response.headers['link']:
             rel_link = self.get_link_from_header(response.headers)
-            link = entity_url + rel_link
+            if rel_link.startswith("http"):
+                link = rel_link
+            else:
+                link = entity_url + rel_link
         # Discovery via HTML doc.
         else:
             soup = bs4.BeautifulSoup(response.text)
