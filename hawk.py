@@ -1,7 +1,14 @@
 # License: This script is public domain.
 # Copyright: 2013 Jeena Paradies
 
-import string, random, time, datetime, hmac, hashlib, base64
+import base64
+import datetime
+import hashlib
+import hmac
+import random
+import string
+import time
+
 from urlparse import urlparse
 
 
@@ -15,23 +22,22 @@ def mkheader(url, http_method, hawk_id, key, app_id=None):
 
     port = parsed_url.port
     if not port:
-        if parsed_url.scheme == "https":
-            port = "443"
+        if parsed_url.scheme == 'https':
+            port = '443'
         else:
-            port = "80"
+            port = '80'
 
-    fragment = ""
+    fragment = ''
     if parsed_url.fragment:
-        fragment = "#" + parsed_url.fragment
+        fragment = '#' + parsed_url.fragment
 
     app = ""
 
     if app_id:
-        app = ", app=\"" + app_id + "\"" # we need this later in the header
+        app = ", app=\"" + app_id + "\""  # we need this later in the header
 
-    mac = base64.encodestring(hmac.new(key, normalized_string, hashlib.sha256).digest())
-
-    return 'Hawk id="' + hawk_id + '", mac="' + mac + '", ts="' + time_stamp + '", nonce="' + nonce + '"' + app
+    return ('Hawk id="' + hawk_id + '", mac="' + mac + '", ts="'
+            + time_stamp + '", nonce="' + nonce + '"' + app)
 
 
 def mk_normalized_string(time_stamp, nonce, http_method, parsed_url, fragment,
@@ -45,15 +51,17 @@ def mk_normalized_string(time_stamp, nonce, http_method, parsed_url, fragment,
                          + str(port) + "\n")
     if attachment_hash:
         normalized_string += attachment_hash + "\n"
-    normalized_string += "\n" # we don't use ext
+    normalized_string += "\n"  # we don't use ext
     if app_id:
         normalized_string += app_id + "\n"
-        normalized_string += "\n" # this is for dlg
+        normalized_string += "\n"  # this is for dlg
     return normalized_string
+
+
+def mk_mac(key, normalized_string):
+    new_hmac = hmac.new(key, normalized_string, hashlib.sha256).digest()
+    return base64.b64encode(new_hmac)
 
 
 def mknonce(length=6, chars=(string.ascii_uppercase + string.digits)):
     return ''.join(random.choice(chars) for x in range(length))
-
-if __name__ == "__main__":
-    print mkheader("https://example.com/foo/bar?baz=bum#test", "get", "1234", "5678", "abcdef")
