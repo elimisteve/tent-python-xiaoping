@@ -1,6 +1,10 @@
+import os
 import sys
 import unittest
 
+file_path = os.path.abspath(__file__)
+project_dir = os.path.dirname(os.path.dirname(file_path))
+sys.path.append(os.path.join(project_dir, 'xiaoping'))
 from tentapp import TentApp
 
 

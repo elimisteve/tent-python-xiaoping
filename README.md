@@ -14,8 +14,8 @@ Xiaoping is a Python client library for [Tent](https://tent.io) v0.3. I'm writin
 
 # Testing
 
-    $ python tentapp_test.py <your_entity_url>
-    $ python hawk_test.py
+    $ python tests/tentapp_test.py <your_entity_url>
+    $ python tests/pyhawk_test.py
 
 # Feedback
 

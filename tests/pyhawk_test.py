@@ -1,9 +1,14 @@
 import json
+import os
+import sys
 import unittest
 
 from hawk.client import header
 from hawk.hcrypto import calculate_payload_hash
 
+file_path = os.path.abspath(__file__)
+project_dir = os.path.dirname(os.path.dirname(file_path))
+sys.path.append(os.path.join(project_dir, 'xiaoping'))
 import pyhawk_monkeypatch
 
 
