@@ -3,7 +3,10 @@ import sys
 import urlparse
 
 import bs4
+import hawk
 import requests
+
+import pyhawk_monkeypatch
 
 
 class TentApp:
@@ -14,6 +17,8 @@ class TentApp:
         self.registration_header = None
         self.registration_attachment = None
         self.credentials = None
+        # Response to the access token request.
+        self.token_response = None
 
     def setup(self):
 
@@ -31,10 +36,22 @@ class TentApp:
         credentials_link = self.get_link_from_header(self.registration_header)
         self.credentials = self.get_credentials(credentials_link)
 
+        # Canonical id_value
+        id_value = self.registration_attachment['post']['mentions'][0]['post']
+
+        # Canonical app_id
+        app_id = self.registration_attachment['post']['id']
+
         # OAuth
-        id_value = self.registration_attachment['post']['id']
         oauth_auth = servers_list[0]['urls']['oauth_auth']
-        code = self.authorization_request(oauth_auth, id_value)
+        code = self.authorization_request(oauth_auth, app_id)
+
+        oauth_token = servers_list[0]['urls']['oauth_token']
+        hawk_key = self.credentials['post']['content']['hawk_key']
+        hawk_key = hawk_key.encode('ascii')
+        self.token_response = self.access_token_request(oauth_token, code,
+                                                        id_value, hawk_key,
+                                                        app_id)
 
     # TODO There should be a library that can handle this.
     def get_link_from_header(self, header):
@@ -61,7 +78,8 @@ class TentApp:
 
     # Creates an app post on the server.
     #
-    # Returns the registration response header and the response attachment as dictionaries.
+    # Returns the registration response header and the response attachment
+    # as dictionaries.
     def register(self, app_info, new_post):
         headers = {'Content-Type': ('application/vnd.tent.post.v0+json;'
                                     ' type="https://tent.io/types/app/v0#"')}
@@ -77,9 +95,29 @@ class TentApp:
         return json.loads(response.text)
 
     # Returns the code parameter in the form of a string.
-    def authorization_request(self, oauth_auth, id_value):
-        payload = {'client_id': id_value}
+    def authorization_request(self, oauth_auth, app_id):
+        payload = {'client_id': app_id}
         response = requests.get(oauth_auth, params=payload)
         location = response.history[0].headers.get('location')
         parsed_location = urlparse.urlparse(location)
-        return urlparse.parse_qs(parsed_location.query)['code']
+        return urlparse.parse_qs(parsed_location.query)['code'][0]
+
+    def access_token_request(self, url, code, id_value, hawk_key, app_id):
+        content_type = 'application/json'
+        data_dict = {'code': code,
+                     'token_type': 'https://tent.io/oauth/hawk-token'}
+        data = json.dumps(data_dict)
+        credentials = {'id': id_value,
+                       'key': hawk_key,
+                       'algorithm': 'sha256'}
+        options = {'credentials': credentials,
+                   'payload': data,
+                   'contentType': 'application/json',
+                   'app': app_id,
+                   'ext': '',
+                   'dlg': ''}
+        header = hawk.client.header(url, 'POST', options=options)['field']
+        headers = {'Accept': 'application/json',
+                   'Authorization': header,
+                   'Content-Type': content_type}
+        return requests.post(url, data=data, headers=headers)

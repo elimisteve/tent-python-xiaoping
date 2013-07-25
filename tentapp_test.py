@@ -12,7 +12,7 @@ class TestTentApp(unittest.TestCase):
 
     def test_setup(self):
         app.setup()
-        self.assertTrue(app.registration_attachment)
+        self.assertTrue(app.token_response)
 
 if __name__ == '__main__':
     sys.argv = sys.argv[:1]
