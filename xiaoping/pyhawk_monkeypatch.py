@@ -33,11 +33,12 @@ def modified_normalize_string(mac_type, options):
     if 'app' in options and options['app'] is not None and \
        len(options['app']) > 0:
         normalized += options['app'] + '\n'
-        if 'dlg' in options and options['dlg'] is not None:  # monkeypatch
-            if 'dlg' in options and len(options['dlg']) > 0:
-                normalized += options['dlg'] + '\n'
-
-    normalized += '\n'  # more monkeypatching
+        # Make 'dlg' blank if 'app' set:
+        ###
+        # if 'dlg' in options and len(options['dlg']) > 0:
+        #     normalized += options['dlg'] + '\n'
+        normalized += '\n'
+        ###
 
     return normalized
 
