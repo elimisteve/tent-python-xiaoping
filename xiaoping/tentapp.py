@@ -20,7 +20,8 @@ class TentApp:
         self.registration_attachment = None
         self.credentials = None
         # Response to the access token request.
-        self.token_response = None
+        self.token_header = None
+        self.token_attachment = None
 
     def setup(self):
 
@@ -50,9 +51,9 @@ class TentApp:
         oauth_token = servers_list[0]['urls']['oauth_token']
         hawk_key = self.credentials['post']['content']['hawk_key']
         hawk_key = hawk_key.encode('ascii')
-        self.token_response = self.access_token_request(oauth_token, code,
-                                                        id_value, hawk_key,
-                                                        app_id)
+        # There's got to be a less ugly way to fit this in 80 lines.
+        (self.token_header,
+         self.token_attachment) = self.access_token_request(oauth_token, code,                                                             id_value, hawk_key,                                                            app_id)
 
     # TODO There should be a library that can handle this.
     def get_link_from_header(self, header):
@@ -121,4 +122,5 @@ class TentApp:
         headers = {'Accept': 'application/json',
                    'Authorization': header,
                    'Content-Type': content_type}
-        return requests.post(url, data=data, headers=headers)
+        response = requests.post(url, data=data, headers=headers)
+        return dict(response.headers), json.loads(response.text)
