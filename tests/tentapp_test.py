@@ -8,8 +8,9 @@ sys.path.append(os.path.join(project_dir, 'xiaoping'))
 from tentapp import TentApp
 
 
-entity_url = sys.argv[1]
-app = TentApp(entity_url)
+entity_url = open('test_info/entity_url').read().rstrip()
+registration_json = open('test_info/registration.json').read()
+app = TentApp(entity_url, registration_json)
 
 
 class TestTentApp(unittest.TestCase):
@@ -19,5 +20,4 @@ class TestTentApp(unittest.TestCase):
         self.assertTrue(app.token_response)
 
 if __name__ == '__main__':
-    sys.argv = sys.argv[:1]
     unittest.main()

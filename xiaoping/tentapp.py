@@ -11,8 +11,10 @@ import pyhawk_monkeypatch
 
 class TentApp:
 
-    def __init__(self, entity_url):
+    def __init__(self, entity_url, registration_json):
         self.entity_url = entity_url
+        # JSON used for registration.
+        self.app_info = registration_json
         self.discovery_response = None
         self.registration_header = None
         self.registration_attachment = None
@@ -26,13 +28,12 @@ class TentApp:
         self.discovery_response = self.discover(self.entity_url)
 
         # Registration
-        app_info = open('registration.json').read()
         servers_list = self.discovery_response['post']['content']['servers']
         # TODO Should iterate through servers_list
         # in case there's more than one.
         new_post = servers_list[0]['urls']['new_post']
         (self.registration_header,
-         self.registration_attachment) = self.register(app_info, new_post)
+         self.registration_attachment) = self.register(self.app_info, new_post)
         credentials_link = self.get_link_from_header(self.registration_header)
         self.credentials = self.get_credentials(credentials_link)
 
