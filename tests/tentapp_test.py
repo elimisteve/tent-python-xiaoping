@@ -8,8 +8,8 @@ sys.path.append(os.path.join(project_dir, 'xiaoping'))
 from tentapp import TentApp
 
 
-entity_url = open('test_info/entity_url').read().rstrip()
-registration_json = open('test_info/registration.json').read()
+entity_url = open('data_for_testing/entity_url').read().rstrip()
+registration_json = open('data_for_testing/registration.json').read()
 app = TentApp(entity_url, registration_json)
 
 

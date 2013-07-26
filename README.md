@@ -14,9 +14,9 @@ Very little works so far. What does work only works on the alpha server because 
 
 Testing requires an entity under your control (here `https://example.com/`). It currently makes changes to that entity such as creating app posts.
 
-    $ mkdir test_info
-    $ echo https://example.com/ > test_info/entity_url
-    $ cp sample_registration.json test_info/registration.json
+    $ mkdir data_for_testing
+    $ echo https://example.com/ > data_for_testing/entity_url
+    $ cp sample_registration.json data_for_testing/registration.json
 
 Change "redirect_uri" in `registration.json` to a URL under your control.
 

@@ -1,4 +1,3 @@
-registration.json
 *.pyc
-test_info
-example_info
+data_for_testing
+data_for_example
