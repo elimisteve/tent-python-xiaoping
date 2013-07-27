@@ -19,5 +19,10 @@ class TestTentApp(unittest.TestCase):
         app.setup()
         self.assertTrue(app.token_attachment)
 
+    def test_post_status(self):
+        app.setup()
+        response = app.post_status('test status')
+        self.assertTrue(response)
+
 if __name__ == '__main__':
     unittest.main()

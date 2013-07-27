@@ -11,7 +11,9 @@ from tentapp import TentApp
 # About
 ###############################################################################
 
-# All this app does is print a list of posts published by its entity.
+
+# This app lets you create a status post and then prints your last five
+# status posts.
 
 # The instructions in "Make preparations" must be carried out before it
 # can be run for the first time. After that the app will save its state
@@ -21,6 +23,7 @@ from tentapp import TentApp
 ###############################################################################
 # Make preparations
 ###############################################################################
+
 
 # 1. Run the following:
 #    $ mkdir data_for_testing
@@ -36,6 +39,7 @@ from tentapp import TentApp
 ###############################################################################
 # Setup
 ###############################################################################
+
 
 pickle_path = os.path.join('data_for_example', 'pickled_app')
 if os.path.isfile(pickle_path):
@@ -54,17 +58,24 @@ pickle_file.close()
 
 
 ###############################################################################
-# Print post list
+# In use
 ###############################################################################
 
+
+app.post_status(raw_input('Type your status post: '))
+
 posts_list = app.get_posts_list()
-for i in posts_list:
+status_type = 'https://tent.io/types/status/v0#'
+status_posts = [i for i in posts_list if i['type'] == status_type]
+
+for i in status_posts[:5]:
+    text = i['content']['text']
     unix_time_in_s = i['published_at']/1000.0
     published_at = datetime.datetime.fromtimestamp(unix_time_in_s)
     pretty_print_time = published_at.strftime('%Y-%m-%d %H:%M:%S')
-    post_name = i['content']['name']
-    print ('================================================================='
-           '==============')
-    print 'Name:         ' + post_name
+
+    print ('======================================='
+           '=======================================')
+    print 'Text:         ' + text
     print 'Published at: ' + pretty_print_time
     print ''
