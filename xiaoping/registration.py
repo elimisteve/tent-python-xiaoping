@@ -10,6 +10,44 @@ import pyhawk_monkeypatch
 
 class PreRegistration:
 
+    # Creates an app post on the server and fills out
+    # the instance's attributes.
+    def setup(self):
+
+        ### Discovery
+        self.discovery_response = self.discover(self.entity_url)
+
+        ### Registration
+        servers_list = self.discovery_response['post']['content']['servers']
+        # TODO Should iterate through servers_list
+        # in case there's more than one.
+        new_post = servers_list[0]['urls']['new_post']
+        result = self.register(self.app_info, new_post)
+        (self.registration_header, self.registration_attachment) = result
+
+        ### Get credentials
+        credentials_link = self.get_link_from_header(self.registration_header)
+        self.credentials = self.get_credentials(credentials_link)
+
+        ### OAuth Authorization Request
+        temp_app_id = self.registration_attachment['post']['id']
+        oauth_auth = servers_list[0]['urls']['oauth_auth']
+        code = self.authorization_request(oauth_auth, temp_app_id)
+
+        ### Access Token Request
+        temp_id = self.registration_attachment['post']['mentions'][0]['post']
+        oauth_token = servers_list[0]['urls']['oauth_token']
+        hawk_key = self.credentials['post']['content']['hawk_key']
+        hawk_key = hawk_key.encode('ascii')
+        result = self.access_token_request(oauth_token, code, temp_id,
+                                           hawk_key, temp_app_id)
+        (self.token_header, self.token_attachment) = result
+
+        ### Save useful values
+        self.id_value = self.token_attachment['access_token']
+        self.hawk_key = self.token_attachment['hawk_key'].encode('ascii')
+        self.app_id = self.registration_attachment['post']['id']
+
     # TODO There should be a library that can handle this.
     def get_link_from_header(self, header):
         link_header = header['link']
