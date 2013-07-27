@@ -53,7 +53,9 @@ class TentApp:
         hawk_key = hawk_key.encode('ascii')
         # There's got to be a less ugly way to fit this in 80 lines.
         (self.token_header,
-         self.token_attachment) = self.access_token_request(oauth_token, code,                                                             id_value, hawk_key,                                                            app_id)
+         self.token_attachment) = self.access_token_request(oauth_token, code,
+                                                            id_value, hawk_key,
+                                                            app_id)
 
     # TODO There should be a library that can handle this.
     def get_link_from_header(self, header):
