@@ -1,3 +1,4 @@
+import datetime
 import os
 import pickle
 import sys
@@ -31,6 +32,7 @@ from tentapp import TentApp
 # 3. Run the app:
 #    $ python example_app.py
 
+
 ###############################################################################
 # Setup
 ###############################################################################
@@ -52,30 +54,10 @@ pickle_file.close()
 
 
 ###############################################################################
-# Do things
+# Print post list
 ###############################################################################
 
-import datetime
-import json
-
-import requests
-import hawk
-
-
-servers_list = app.discovery_response['post']['content']['servers']
-url = servers_list[0]['urls']['posts_feed']
-credentials = {'id': app.id_value,
-               'key': app.hawk_key,
-               'algorithm': 'sha256'}
-options = {'credentials': credentials,
-           'app': app.app_id,
-           'ext': ''}
-header = hawk.client.header(url, 'GET', options=options)['field']
-headers = {'Accept': 'application/vnd.tent.posts-feed.v0+json',
-           'Authorization': header}
-response = requests.get(url, headers=headers)
-attachment_dict = json.loads(response.text)
-posts_list = attachment_dict['posts']
+posts_list = app.get_posts_list()
 for i in posts_list:
     unix_time_in_s = i['published_at']/1000.0
     published_at = datetime.datetime.fromtimestamp(unix_time_in_s)

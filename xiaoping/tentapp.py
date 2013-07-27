@@ -1,7 +1,8 @@
-from registration import PreRegistration
+from registration import RegistrationHelper
+from posts import PostUtility
 
 
-class TentApp(PreRegistration):
+class TentApp(RegistrationHelper, PostUtility):
 
     def __init__(self, entity_url, registration_json):
 

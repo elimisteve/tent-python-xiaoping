@@ -8,7 +8,7 @@ import requests
 import pyhawk_monkeypatch
 
 
-class PreRegistration:
+class RegistrationHelper:
 
     # Creates an app post on the server and fills out
     # the instance's attributes.
