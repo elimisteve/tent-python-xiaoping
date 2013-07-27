@@ -7,7 +7,7 @@ from tentapp import TentApp
 
 
 ###############################################################################
-# Description.
+# About
 ###############################################################################
 
 # All this app does is print a list of posts published by its entity.
@@ -18,7 +18,7 @@ from tentapp import TentApp
 
 
 ###############################################################################
-# Make preparations.
+# Make preparations
 ###############################################################################
 
 # 1. Run the following:
@@ -28,9 +28,11 @@ from tentapp import TentApp
 
 # 2. Change "redirect_uri" in `registration.json` to a URL under your control.
 
+# 3. Run the app:
+#    $ python example_app.py
 
 ###############################################################################
-# Set up the app.
+# Setup
 ###############################################################################
 
 pickle_path = os.path.join('data_for_example', 'pickled_app')
@@ -50,7 +52,7 @@ pickle_file.close()
 
 
 ###############################################################################
-# Interact with posts.
+# Do things
 ###############################################################################
 
 import datetime
@@ -62,14 +64,11 @@ import hawk
 
 servers_list = app.discovery_response['post']['content']['servers']
 url = servers_list[0]['urls']['posts_feed']
-id_value = app.token_attachment['access_token']
-hawk_key = app.token_attachment['hawk_key'].encode('ascii')
-app_id = app.registration_attachment['post']['id']
-credentials = {'id': id_value,
-               'key': hawk_key,
+credentials = {'id': app.id_value,
+               'key': app.hawk_key,
                'algorithm': 'sha256'}
 options = {'credentials': credentials,
-           'app': app_id,
+           'app': app.app_id,
            'ext': ''}
 header = hawk.client.header(url, 'GET', options=options)['field']
 headers = {'Accept': 'application/vnd.tent.posts-feed.v0+json',
