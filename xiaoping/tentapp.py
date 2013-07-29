@@ -14,9 +14,9 @@ class TentApp(RegistrationHelper, PostUtility):
         self.app_info = registration_json
 
         # These will get filled in as we go through registration.
-        self.discovery_response = None
-        self.registration_header = None
-        self.registration_attachment = None
+        self.discovery_attachment = None
+        self.reg_header = None  # Header of the registration response.
+        self.reg_attachment = None  # JSON of the registration response.
         self.credentials = None
         self.token_header = None
         self.token_attachment = None

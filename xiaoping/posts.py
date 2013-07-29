@@ -4,7 +4,7 @@ import json
 class PostUtility:
 
     def get_posts_list(self):
-        servers_list = self.discovery_response['post']['content']['servers']
+        servers_list = self.discovery_attachment['post']['content']['servers']
         url = servers_list[0]['urls']['posts_feed']
         headers = {'Accept': 'application/vnd.tent.posts-feed.v0+json'}
         method = 'GET'
@@ -16,7 +16,7 @@ class PostUtility:
     #
     # Returns the response for testing purposes.
     def post_status(self, text):
-        servers_list = self.discovery_response['post']['content']['servers']
+        servers_list = self.discovery_attachment['post']['content']['servers']
         url = servers_list[0]['urls']['new_post']
         method = 'POST'
         post_type = 'https://tent.io/types/status/v0#'

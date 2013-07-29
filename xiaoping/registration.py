@@ -15,29 +15,29 @@ class RegistrationHelper:
     def setup(self):
 
         ### Discovery
-        self.discovery_response = self.discover(self.entity_url)
+        self.discovery_attachment = self.discover(self.entity_url)
 
         ### Registration
-        servers_list = self.discovery_response['post']['content']['servers']
+        servers_list = self.discovery_attachment['post']['content']['servers']
         # TODO Should iterate through servers_list
         # in case there's more than one.
         new_post = servers_list[0]['urls']['new_post']
         result = self.register(self.app_info, new_post)
-        (self.registration_header, self.registration_attachment) = result
+        (self.reg_header, self.reg_json) = result
 
         ### Get credentials
-        credentials_link = self.get_link_from_header(self.registration_header)
-        self.credentials = self.get_credentials(credentials_link)
+        credentials_link = self.get_link_from_header(self.reg_header)
+        self.credentials_attachment = self.get_credentials(credentials_link)
 
         ### OAuth Authorization Request
-        temp_app_id = self.registration_attachment['post']['id']
+        temp_app_id = self.reg_json['post']['id']
         oauth_auth = servers_list[0]['urls']['oauth_auth']
         code = self.authorization_request(oauth_auth, temp_app_id)
 
         ### Access Token Request
-        temp_id = self.registration_attachment['post']['mentions'][0]['post']
+        temp_id = self.reg_json['post']['mentions'][0]['post']
         oauth_token = servers_list[0]['urls']['oauth_token']
-        hawk_key = self.credentials['post']['content']['hawk_key']
+        hawk_key = self.credentials_attachment['post']['content']['hawk_key']
         hawk_key = hawk_key.encode('ascii')
         result = self.access_token_request(oauth_token, code, temp_id,
                                            hawk_key, temp_app_id)
@@ -46,7 +46,7 @@ class RegistrationHelper:
         ### Save useful values
         self.id_value = self.token_attachment['access_token']
         self.hawk_key = self.token_attachment['hawk_key'].encode('ascii')
-        self.app_id = self.registration_attachment['post']['id']
+        self.app_id = self.reg_json['post']['id']
 
     # TODO There should be a library that can handle this.
     def get_link_from_header(self, header):
@@ -80,9 +80,9 @@ class RegistrationHelper:
                                     ' type="https://tent.io/types/app/v0#"')}
         post_creation_response = requests.post(new_post, data=app_info,
                                                headers=headers)
-        registration_header = dict(post_creation_response.headers)
-        registration_attachment = json.loads(post_creation_response.text)
-        return registration_header, registration_attachment
+        reg_header = dict(post_creation_response.headers)
+        reg_json = json.loads(post_creation_response.text)
+        return reg_header, reg_json
 
     # Returns the app's credentials as a dictionary.
     def get_credentials(self, credentials_link):
