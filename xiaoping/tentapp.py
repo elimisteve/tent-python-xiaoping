@@ -1,15 +1,16 @@
 import json
 import urlparse
 
-import hawk
 import requests
 
-from registration import RegistrationHelper
-from posts import PostUtility
 import pyhawk_monkeypatch
 
+from posts import PostUtility
+from registration import RegistrationHelper
+from utils import GeneralUtility
 
-class TentApp(RegistrationHelper, PostUtility):
+
+class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
 
     def __init__(self, entity_url, registration_json):
 
@@ -67,23 +68,3 @@ class TentApp(RegistrationHelper, PostUtility):
         self.token_attachment = json.loads(response.text)
         self.id_value = self.token_attachment['access_token']
         self.hawk_key = self.token_attachment['hawk_key'].encode('ascii')
-
-    # A wrapper around PyHawk's header creator and requests.get/requests.post
-    # to make them easy to use within Xiaoping.
-    def make_request(self, url, method, headers=[], data=None):
-        credentials = {'id': self.id_value,
-                       'key': self.hawk_key,
-                       'algorithm': 'sha256'}
-        options = {'credentials': credentials,
-                   'app': self.app_id,
-                   'ext': ''}
-        if 'payload' in options:
-            options['payload'] = data
-            options['contentType'] = content_type
-            options['dlg'] = ''
-        header = hawk.client.header(url, method, options=options)['field']
-        headers['Authorization'] = header
-        if method.upper() == 'GET':
-            return requests.get(url, headers=headers)
-        if method.upper() == 'POST':
-            return requests.post(url, data=data, headers=headers)

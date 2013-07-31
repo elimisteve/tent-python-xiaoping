@@ -1,22 +1,10 @@
 import json
 
 import bs4
-import hawk
 import requests
 
 
 class RegistrationHelper:
-
-    # TODO There should be a library that can handle this.
-    def get_link_from_header(self, header):
-        link_header = header['link']
-        left, right = link_header.find('<') + 1, link_header.find('>')
-        return link_header[left:right]
-
-    def get_server(self):
-        # TODO Should iterate through servers_list
-        # in case there's more than one.
-        return self.discovery_attachment['post']['content']['servers'][0]
 
     def discover(self, response):
         # Discovery via header field.
@@ -43,16 +31,6 @@ class RegistrationHelper:
         temp_app_id = self.reg_json['post']['id']
         payload = {'client_id': temp_app_id}
         return (oauth_auth, {'params': payload})
-
-    def make_request(self, url, method, headers=[], data=None):
-        options = {'credentials': credentials,
-                   'app': self.app_id,
-                   'ext': ''}
-        if 'payload' in options:
-            options['payload'] = data
-            options['contentType'] = content_type
-            options['dlg'] = ''
-        header = hawk.client.header(url, method, options=options)['field']
 
     def access_token_request(self, code):
         oauth_token = self.get_server()['urls']['oauth_token']
