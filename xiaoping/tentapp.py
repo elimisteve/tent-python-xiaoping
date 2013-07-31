@@ -1,8 +1,12 @@
-import requests
+import json
+import urlparse
+
 import hawk
+import requests
 
 from registration import RegistrationHelper
 from posts import PostUtility
+import pyhawk_monkeypatch
 
 
 class TentApp(RegistrationHelper, PostUtility):
@@ -24,6 +28,44 @@ class TentApp(RegistrationHelper, PostUtility):
         self.id_value = None
         self.hawk_key = None
         self.app_id = None
+
+    # Creates an app post on the server and fills out
+    # the instance's attributes.
+    def setup(self):
+
+        ### Discovery
+        response1 = requests.get(self.entity_url)
+        response2 = requests.get(self.discover(response1))
+        self.discovery_attachment = json.loads(response2.text)
+
+        ### Registration
+        url, kwargs = self.register()
+        response = requests.post(url, **kwargs)
+        self.reg_header = dict(response.headers)
+        self.reg_json = json.loads(response.text)
+        self.app_id = self.reg_json['post']['id']
+
+        ### Get credentials
+        credentials_link = self.get_link_from_header(self.reg_header)
+        response = requests.get(credentials_link)
+        self.credentials_attachment = json.loads(response.text)
+
+        ### OAuth Authorization Request
+        url, kwargs = self.authorization_request()
+        response = requests.get(url, **kwargs)
+        location = response.history[0].headers.get('location')
+        parsed_location = urlparse.urlparse(location)
+        code = urlparse.parse_qs(parsed_location.query)['code'][0]
+
+        ### Access Token Request
+        url, kwargs = self.access_token_request(code)
+        response = requests.post(url, **kwargs)
+        self.token_header = dict(response.headers)
+        self.token_attachment = json.loads(response.text)
+
+        ### Save useful values
+        self.id_value = self.token_attachment['access_token']
+        self.hawk_key = self.token_attachment['hawk_key'].encode('ascii')
 
     # A wrapper around PyHawk's header creator and requests.get/requests.post
     # to make them easy to use within Xiaoping.
