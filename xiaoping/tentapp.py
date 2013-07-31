@@ -58,12 +58,13 @@ class TentApp(RegistrationHelper, PostUtility):
         code = urlparse.parse_qs(parsed_location.query)['code'][0]
 
         ### Access Token Request
-        url, kwargs = self.access_token_request(code)
-        response = requests.post(url, **kwargs)
+        self.id_value = self.reg_json['post']['mentions'][0]['post']
+        hawk_key = self.credentials_attachment['post']['content']['hawk_key']
+        self.hawk_key = hawk_key.encode('ascii')
+        args, kwargs = self.access_token_request(code)
+        response = self.make_request(*args, **kwargs)
         self.token_header = dict(response.headers)
         self.token_attachment = json.loads(response.text)
-
-        ### Save useful values
         self.id_value = self.token_attachment['access_token']
         self.hawk_key = self.token_attachment['hawk_key'].encode('ascii')
 

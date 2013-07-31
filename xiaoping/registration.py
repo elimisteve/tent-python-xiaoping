@@ -44,27 +44,21 @@ class RegistrationHelper:
         payload = {'client_id': temp_app_id}
         return (oauth_auth, {'params': payload})
 
+    def make_request(self, url, method, headers=[], data=None):
+        options = {'credentials': credentials,
+                   'app': self.app_id,
+                   'ext': ''}
+        if 'payload' in options:
+            options['payload'] = data
+            options['contentType'] = content_type
+            options['dlg'] = ''
+        header = hawk.client.header(url, method, options=options)['field']
+
     def access_token_request(self, code):
         oauth_token = self.get_server()['urls']['oauth_token']
         data_dict = {'code': code,
                      'token_type': 'https://tent.io/oauth/hawk-token'}
         data = json.dumps(data_dict)
-        id_value = self.reg_json['post']['mentions'][0]['post']
-        hawk_key = self.credentials_attachment['post']['content']['hawk_key']
-        hawk_key = hawk_key.encode('ascii')
-        credentials = {'id': id_value,
-                       'key': hawk_key,
-                       'algorithm': 'sha256'}
         content_type = 'application/json'
-        options = {'credentials': credentials,
-                   'payload': data,
-                   'contentType': content_type,
-                   'app': self.app_id,
-                   'ext': '',
-                   'dlg': ''}
-        header = hawk.client.header(oauth_token, 'POST',
-                                    options=options)['field']
-        headers = {'Accept': content_type,
-                   'Authorization': header,
-                   'Content-Type': content_type}
-        return (oauth_token, {'data': data, 'headers': headers})
+        headers = {'Accept': content_type, 'Content-Type': content_type}
+        return ((oauth_token, 'POST'), {'data': data, 'headers': headers})
