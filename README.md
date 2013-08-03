@@ -22,8 +22,7 @@ Change "redirect_uri" in `registration.json` to a URL under your control.
 
 # Run Tests
 
-    $ python tests/tentapp_test.py
-    $ python tests/pyhawk_test.py
+    $ python -m unittest discover xiaoping
 
 # Feedback
 

@@ -3,7 +3,8 @@ import os
 import pickle
 import sys
 
-sys.path.append('xiaoping')
+project_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(project_dir, 'xiaoping'))
 from tentapp import TentApp
 
 
@@ -41,14 +42,15 @@ from tentapp import TentApp
 ###############################################################################
 
 
-pickle_path = os.path.join('data_for_example', 'pickled_app')
+pickle_path = os.path.join(project_dir, 'data_for_example', 'pickled_app')
+entity_path = os.path.join(project_dir, 'data_for_example', 'entity_url')
+info_path = os.path.join(project_dir, 'data_for_example', 'registration.json')
+
 if os.path.isfile(pickle_path):
     pickle_file = open(pickle_path)
     app = pickle.load(pickle_file)
 else:
-    entity_path = os.path.join('data_for_example', 'entity_url')
     entity_url = open(entity_path).read().rstrip()
-    registration_path = os.path.join('data_for_example', 'registration.json')
     registration_json = open(registration_path).read()
     app = TentApp(entity_url, registration_json)
     app.setup()
