@@ -6,9 +6,10 @@ from tentapp import TentApp
 
 
 file_path = os.path.abspath(__file__)
-project_dir = os.path.dirname(os.path.dirname(os.path.dirname(file_path)))
-entity_path = os.path.join(project_dir, 'data_for_testing', 'entity_url')
-info_path = os.path.join(project_dir, 'data_for_testing', 'registration.json')
+
+project_path = os.path.dirname(os.path.dirname(os.path.dirname(file_path)))
+entity_path = os.path.join(project_path, 'data_for_testing', 'entity_url')
+info_path = os.path.join(project_path, 'data_for_testing', 'registration.json')
 
 
 class TestTentApp(unittest.TestCase):
