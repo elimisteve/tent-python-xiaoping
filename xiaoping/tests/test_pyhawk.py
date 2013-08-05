@@ -7,6 +7,7 @@ from hawk.client import header
 from hawk.hcrypto import calculate_payload_hash
 
 import pyhawk_monkeypatch
+from tentapp import TentApp
 
 
 # Test against examples of header creation from here:
@@ -17,17 +18,18 @@ class TestTentDocExamples(unittest.TestCase):
 
     def setUp(self):
         # Shared test data
-        self.key = 'HX9QcbD-r3ItFEnRcAuOSg'
+        self.app = TentApp('', None)
+        self.app.hawk_key = 'HX9QcbD-r3ItFEnRcAuOSg'
         self.url = 'https://example.com/posts'
         self.http_method = 'POST'
 
     def test_app_request_with_hash(self):
         # More test data
-        self.hawk_id = 'exqbZWtykFZIh2D7cXi9dA'
+        self.app.id_value = 'exqbZWtykFZIh2D7cXi9dA'
+        self.app.app_id = 'wn6yzHGe5TLaT-fvOPbAyQ'
         self.time_stamp = 1368996800
         self.nonce = '3yuYCD4Z'
-        self.attachment_hash = 'neQFHgYKl/jFqDINrC21uLS0gkFglTz789rzcSr7HYU='
-        self.app_id = 'wn6yzHGe5TLaT-fvOPbAyQ'
+        self.provided_hash = 'neQFHgYKl/jFqDINrC21uLS0gkFglTz789rzcSr7HYU='
         # Answers
         self.correct = ['id="exqbZWtykFZIh2D7cXi9dA"',
                         'mac="2sttHCQJG9ejj1x7eCi35FP23Miu9VtlaUgwk68DTpM="',
@@ -36,11 +38,16 @@ class TestTentDocExamples(unittest.TestCase):
                         'hash="neQFHgYKl/jFqDINrC21uLS0gkFglTz789rzcSr7HYU="',
                         'app="wn6yzHGe5TLaT-fvOPbAyQ"']
         # Run code
-        self.assertTrue(self.check_header(self.get_header(), self.correct))
+        header = self.app.make_auth_header(self.url,
+                                           self.http_method,
+                                           timestamp=self.time_stamp,
+                                           nonce=self.nonce,
+                                           attachment_hash=self.provided_hash)
+        self.assertTrue(self.check_header(header, self.correct))
 
     def test_relationship_request(self):
         # More test data
-        self.hawk_id = 'exqbZWtykFZIh2D7cXi9dA'
+        self.app.id_value = 'exqbZWtykFZIh2D7cXi9dA'
         self.time_stamp = 1368996800
         self.nonce = '3yuYCD4Z'
         # Answers
@@ -49,23 +56,11 @@ class TestTentDocExamples(unittest.TestCase):
                         'ts="1368996800"',
                         'nonce="3yuYCD4Z"']
         # Run code
-        self.assertTrue(self.check_header(self.get_header(), self.correct))
-
-    def get_header(self):
-        url = self.url
-        method = self.http_method
-        credentials = {'id': self.hawk_id,
-                       'key': self.key,
-                       'algorithm': 'sha256'}
-        options = {'credentials': credentials,
-                   'timestamp': self.time_stamp,
-                   'nonce': self.nonce,
-                   'ext': ''}
-        if hasattr(self, 'attachment_hash'):
-            options['hash'] = self.attachment_hash
-        if hasattr(self, 'app_id'):
-            options['app'] = self.app_id
-        return header(url, method, options=options)['field']
+        header = self.app.make_auth_header(self.url,
+                                           self.http_method,
+                                           timestamp=self.time_stamp,
+                                           nonce=self.nonce)
+        self.assertTrue(self.check_header(header, self.correct))
 
     # Takes a header string and a list of the contents that should make it up.
     #

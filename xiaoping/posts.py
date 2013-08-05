@@ -7,7 +7,7 @@ class PostUtility:
         url = self.get_server()['urls']['posts_feed']
         headers = {'Accept': 'application/vnd.tent.posts-feed.v0+json'}
         method = 'GET'
-        response = self.make_request(url, method, headers=headers)
+        response = self.make_request(url, method, headers)
         attachment_dict = json.loads(response.text)
         return attachment_dict['posts']
 
@@ -22,4 +22,4 @@ class PostUtility:
         headers = {'Content-Type': content_type + '; type="' + post_type + '"'}
         data_dict = {'type': post_type, 'content': {'text': text}}
         data = json.dumps(data_dict)
-        return self.make_request(url, method, headers=headers, data=data)
+        return self.make_request(url, method, headers, data)
