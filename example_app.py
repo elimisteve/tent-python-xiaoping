@@ -51,7 +51,7 @@ if os.path.isfile(pickle_path):
     app = pickle.load(pickle_file)
 else:
     entity_url = open(entity_path).read().rstrip()
-    registration_json = open(registration_path).read()
+    registration_json = open(info_path).read()
     app = TentApp(entity_url, registration_json)
     app.setup()
     pickle_file = open(pickle_path, 'w')

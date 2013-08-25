@@ -8,16 +8,17 @@ class RegistrationHelper:
 
     def discover(self, response):
         # Discovery via header field.
-        if response.headers['link']:
+        if 'link' in response.headers:
             rel_link = self.get_link_from_header(response.headers)
-            if rel_link.startswith("http"):
-                link = rel_link
-            else:
-                link = self.entity_url + rel_link
         # Discovery via HTML doc.
         else:
             soup = bs4.BeautifulSoup(response.text)
-            link = soup.head.link.get('href')
+            rel_link = soup.head.link.get('href')
+        # Return an absolute link.
+        if rel_link.startswith("http"):
+            link = rel_link
+        else:
+            link = self.entity_url + rel_link
         return link
 
     def register(self):
