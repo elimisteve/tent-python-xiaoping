@@ -4,7 +4,7 @@ Xiaoping is a Python client library for [Tent](https://tent.io) v0.3. I'm writin
 
 # Status
 
-Very little works so far. What does work only works on the alpha server because it skips an authentication step.
+Partially complete. Only implements a very limited subset of Tent client functionality.
 
 # Setup
 

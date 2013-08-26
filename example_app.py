@@ -53,7 +53,19 @@ else:
     entity_url = open(entity_path).read().rstrip()
     registration_json = open(info_path).read()
     app = TentApp(entity_url, registration_json)
-    app.setup()
+    go_to_me = app.start_setup()
+    print 'Now you need to go to:'
+    print ''
+    print go_to_me
+    print ''
+    print 'and approve the app.'
+    print "After doing so you'll be redirected to a new page."
+    print "Get the code parameter from that page's URL and enter it here."
+    code = raw_input('> ')
+    # now tries to go to the chaptermarks server
+    # parsed_location = urlparse.urlparse(location)
+    # code = urlparse.parse_qs(parsed_location.query)['code'][0]
+    app.finish_setup(code)
     pickle_file = open(pickle_path, 'w')
     pickle.dump(app, pickle_file)
 pickle_file.close()

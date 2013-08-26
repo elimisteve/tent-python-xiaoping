@@ -18,7 +18,12 @@ class TestTentApp(unittest.TestCase):
         entity_url = open(entity_path).read().rstrip()
         registration_json = open(info_path).read()
         self.app = TentApp(entity_url, registration_json)
-        self.app.setup()
+        link = self.app.start_setup()
+        print 'Go to the link, click accept, and enter the "code" part'
+        print 'of the url argument here.'
+        print link
+        code = raw_input('> ')
+        self.app.finish_setup(code)
 
     def test_setup(self):
         self.assertTrue(self.app.token_attachment)

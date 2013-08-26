@@ -1,5 +1,4 @@
 import json
-import urlparse
 
 import requests
 
@@ -30,9 +29,11 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
         self.hawk_key = None
         self.app_id = None
 
-    # Creates an app post on the server and fills out
-    # the instance's attributes.
-    def setup(self):
+    # Creates an App post on the server and begins filling out this object's
+    # attributes.
+    #
+    # Returns the URL where the user can approve the app.
+    def start_setup(self):
 
         ### Discovery
         response1 = requests.get(self.entity_url)
@@ -54,9 +55,10 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
         ### OAuth Authorization Request
         url, kwargs = self.authorization_request()
         response = requests.get(url, **kwargs)
-        location = response.history[0].headers.get('location')
-        parsed_location = urlparse.urlparse(location)
-        code = urlparse.parse_qs(parsed_location.query)['code'][0]
+        # response.history[0] is a 301 and response.history[1] is a 302
+        return response.history[1].url
+
+    def finish_setup(self, code):
 
         ### Access Token Request
         self.id_value = self.reg_json['post']['mentions'][0]['post']
