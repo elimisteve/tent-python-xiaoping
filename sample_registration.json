@@ -2,6 +2,9 @@
   "type": "https://tent.io/types/app/v0#",
   "content": {
     "name": "Example App",
+    "scopes": [
+      "permissions"
+    ],
     "url": "https://app.example.com",
     "types": {
       "read": [
@@ -14,7 +17,4 @@
     },
     "redirect_uri": "https://app.example.com/oauth"
   },
-  "permissions": {
-    "public": false
-  }
 }
