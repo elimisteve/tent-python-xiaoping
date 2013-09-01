@@ -24,6 +24,8 @@ Change "redirect_uri" in `registration.json` to a URL under your control.
 
     $ python -m unittest discover xiaoping
 
+. . . and follow the directions.
+
 # Feedback
 
 Criticism would be *greatly* appreciated. Email me at [ian@housejeffries.com](mailto:ian@housejeffries.com).
