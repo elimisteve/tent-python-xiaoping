@@ -1,6 +1,5 @@
 import datetime
 import os
-import pickle
 import sys
 
 project_path = os.path.dirname(os.path.abspath(__file__))
@@ -15,10 +14,9 @@ from tentapp import TentApp
 
 # This app lets you create a status post and then prints your last five
 # status posts.
-
-# The instructions in "Make preparations" must be carried out before it
-# can be run for the first time. After that the app will save its state
-# in the file: `data_for_example/pickled_app`.
+#
+# You must already have a Tent server set up for it to work. One place that
+# can be done is: https://cupcake.io/
 
 
 ###############################################################################
@@ -28,8 +26,8 @@ from tentapp import TentApp
 
 # 1. Run the following:
 #    $ mkdir data_for_testing
-#    $ echo https://my-entity.example.com/ > data_for_testing/entity_url
-#    $ cp sample_registration.json data_for_testing/registration.json
+#    $ echo https://my-entity.example.com/ > data_for_example/entity_url
+#    $ cp sample_registration.json data_for_example/registration.json
 
 # 2. Change "redirect_uri" in `registration.json` to a URL under your control.
 
@@ -42,33 +40,24 @@ from tentapp import TentApp
 ###############################################################################
 
 
-pickle_path = os.path.join(project_path, 'data_for_example', 'pickled_app')
 entity_path = os.path.join(project_path, 'data_for_example', 'entity_url')
 info_path = os.path.join(project_path, 'data_for_example', 'registration.json')
 
-if os.path.isfile(pickle_path):
-    pickle_file = open(pickle_path)
-    app = pickle.load(pickle_file)
-else:
-    entity_url = open(entity_path).read().rstrip()
-    registration_json = open(info_path).read()
-    app = TentApp(entity_url, registration_json)
-    go_to_me = app.start_setup()
-    print 'Now you need to go to:'
-    print ''
-    print go_to_me
-    print ''
-    print 'and approve the app.'
-    print "After doing so you'll be redirected to a new page."
-    print "Get the code parameter from that page's URL and enter it here."
-    code = raw_input('> ')
-    # now tries to go to the chaptermarks server
-    # parsed_location = urlparse.urlparse(location)
-    # code = urlparse.parse_qs(parsed_location.query)['code'][0]
-    app.finish_setup(code)
-    pickle_file = open(pickle_path, 'w')
-    pickle.dump(app, pickle_file)
-pickle_file.close()
+entity_url = open(entity_path).read().rstrip()
+registration_json = open(info_path).read()
+app = TentApp(entity_url, registration_json)
+go_to_me = app.start_setup()
+print 'Now you need to go to:'
+print ''
+print go_to_me
+print ''
+print 'and approve the app.'
+print "After doing so you'll be redirected to a new page."
+print "Get the code parameter from that page's URL and enter it here."
+code = raw_input('> ')
+app.finish_setup(code)
+# A real app would store app.app_id, app.id_value, and app.hawk_key
+# at this point.
 
 
 ###############################################################################
