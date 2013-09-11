@@ -10,6 +10,7 @@ except ImportError:
 
 install_reqs = parse_requirements("requirements.txt")
 requirements = [str(i.req) for i in install_reqs]
+import ipdb; ipdb.set_trace() # ------------------------ #
 
 setup(
     name='xiaoping',
@@ -19,6 +20,6 @@ setup(
     url='https://github.com/seagreen/tent-python-xiaoping',
     license=open('MIT-LICENSE.txt').read(),
     packages=['xiaoping'],
-    package_dir={'requests': 'requests'}
+    package_dir={'requests': 'requests'},
     install_requires=requirements
 )
