@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 
+from pip.req import parse_requirements
+
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
+
+install_reqs = parse_requirements("requirements.txt")
+requirements = [str(i.req) for i in install_reqs]
 
 setup(
     name='xiaoping',
@@ -15,4 +20,5 @@ setup(
     license=open('MIT-LICENSE.txt').read(),
     packages=['xiaoping'],
     package_dir={'requests': 'requests'}
+    install_requires=requirements
 )
