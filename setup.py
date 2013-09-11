@@ -13,5 +13,6 @@ setup(
     author_email='ian@housejeffries.com',
     url='https://github.com/seagreen/tent-python-xiaoping',
     license=open('MIT-LICENSE.txt').read(),
-    packages=['xiaoping']
+    packages=['xiaoping'],
+    package_dir={'requests': 'requests'}
 )
