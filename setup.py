@@ -10,7 +10,6 @@ except ImportError:
 
 install_reqs = parse_requirements("requirements.txt")
 requirements = [str(i.req) for i in install_reqs]
-import ipdb; ipdb.set_trace() # ------------------------ #
 
 setup(
     name='xiaoping',
