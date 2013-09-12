@@ -1,7 +1,6 @@
 import unittest
 
 import config
-import registration
 from posts import Post
 from tentapp import TentApp
 

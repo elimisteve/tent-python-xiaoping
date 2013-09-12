@@ -10,7 +10,7 @@ Working but fragile. Not ready for production.
 
 Testing requires a Tent entity under your control. It currently makes changes to that entity such as creating app and status posts.
 
-One place to create a Tent entity is [cupcake.io](https://cupcake.io/). After you have a Tent entity run:
+One place to create a Tent entity is [cupcake.io](https://cupcake.io/). After you've done so run:
 
     $ pip install -r requirements.txt
     $ cp example_config.py config.py
