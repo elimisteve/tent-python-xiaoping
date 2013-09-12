@@ -2,6 +2,7 @@ import unittest
 
 import config
 import registration
+from posts import Post
 from tentapp import TentApp
 
 
@@ -22,7 +23,9 @@ class FunctionalTentAppTests(unittest.TestCase):
         self.assertTrue(app.token_attachment)
 
     def test_post_status(self):
-        response = app.post_status('Test post.')
+        status_post = Post('https://tent.io/types/status/v0#',
+                           {'text': 'Test post.'})
+        response = app.create_post(status_post)
         self.assertTrue(response)
 
 
