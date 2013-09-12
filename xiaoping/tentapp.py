@@ -41,8 +41,7 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
         self.discovery_attachment = json.loads(response2.text)
 
         ### Registration
-        url, kwargs = self.register()
-        response = requests.post(url, **kwargs)
+        response = self.register()
         self.reg_header = dict(response.headers)
         self.reg_json = json.loads(response.text)
         self.app_id = self.reg_json['post']['id']
@@ -53,21 +52,17 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
         self.credentials_attachment = json.loads(response.text)
 
         ### OAuth Authorization Request
-        url, kwargs = self.authorization_request()
-        response = requests.get(url, **kwargs)
-        # Response.history[0] used to be a 301 and response.history[1]
-        # was a 302
-        # Currently response.history is a one item tuple containing a 302.
+        response = self.authorization_request()
         return response.history[0].url
 
     def finish_setup(self, code):
 
-        ### Access Token Request
         self.id_value = self.credentials_attachment['post']['id']
         hawk_key = self.credentials_attachment['post']['content']['hawk_key']
         self.hawk_key = hawk_key.encode('ascii')
-        args, kwargs = self.access_token_request(code)
-        response = self.make_request(*args, **kwargs)
+
+        ### Access Token Request
+        response = self.access_token_request(code)
         self.token_header = dict(response.headers)
         self.token_attachment = json.loads(response.text)
         self.id_value = self.token_attachment['access_token']

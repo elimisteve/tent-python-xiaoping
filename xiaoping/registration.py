@@ -25,13 +25,13 @@ class RegistrationHelper:
         new_post = self.get_server()['urls']['new_post']
         headers = {'Content-Type': ('application/vnd.tent.post.v0+json;'
                                     ' type="https://tent.io/types/app/v0#"')}
-        return (new_post, {'data': self.app_info, 'headers': headers})
+        return requests.post(new_post, data=self.app_info, headers=headers)
 
     def authorization_request(self):
         oauth_auth = self.get_server()['urls']['oauth_auth']
         temp_app_id = self.reg_json['post']['id']
         payload = {'client_id': temp_app_id}
-        return (oauth_auth, {'params': payload})
+        return requests.get(oauth_auth, params=payload)
 
     def access_token_request(self, code):
         oauth_token = self.get_server()['urls']['oauth_token']
@@ -40,4 +40,5 @@ class RegistrationHelper:
         data = json.dumps(data_dict)
         content_type = 'application/json'
         headers = {'Accept': content_type, 'Content-Type': content_type}
-        return ((oauth_token, 'POST'), {'data': data, 'headers': headers})
+        return self.make_request(oauth_token, 'POST',
+                                 data=data, headers=headers)
