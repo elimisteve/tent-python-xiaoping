@@ -11,11 +11,11 @@ from utils import GeneralUtility
 
 class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
 
-    def __init__(self, entity_url, registration_json):
+    def __init__(self, entity_url, app_name):
 
         # Initial info to set up the app.
         self.entity_url = entity_url
-        self.app_info = registration_json
+        self.name = app_name
 
         # These will get filled in as we go through registration.
         self.discovery_attachment = None
@@ -25,8 +25,8 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
         self.token_header = None
         self.token_attachment = None
 
-        self.id_value = None
-        self.hawk_key = None
+        self.id_value = ''
+        self.hawk_key = ''
         self.app_id = None
 
     # Creates an App post on the server and begins filling out this object's

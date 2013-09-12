@@ -18,7 +18,7 @@ class TestTentDocExamples(unittest.TestCase):
 
     def setUp(self):
         # Shared test data
-        self.app = TentApp('', None)
+        self.app = TentApp('https://example.com', 'App Name')
         self.app.hawk_key = 'HX9QcbD-r3ItFEnRcAuOSg'
         self.url = 'https://example.com/posts'
         self.http_method = 'POST'

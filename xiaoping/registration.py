@@ -3,6 +3,8 @@ import json
 import bs4
 import requests
 
+from posts import Post
+
 
 class RegistrationHelper:
 
@@ -22,10 +24,20 @@ class RegistrationHelper:
         return link
 
     def register(self):
-        new_post = self.get_server()['urls']['new_post']
-        headers = {'Content-Type': ('application/vnd.tent.post.v0+json;'
-                                    ' type="https://tent.io/types/app/v0#"')}
-        return requests.post(new_post, data=self.app_info, headers=headers)
+        app_info = {'name': self.name,
+                    'scopes': ['permissions'],
+                    'url': 'https://app.example.com',
+                    'types': {'read': ['https://tent.io/types/app/v0'],
+                              'write': ['https://tent.io/types/status/v0',
+                                        'https://tent.io/types/photo/v0']},
+                    'redirect_uri': 'https://app.example.com/oauth'}
+        post = Post('https://tent.io/types/app/v0#', app_info)
+        url = self.get_server()['urls']['new_post']
+        content_type = 'application/vnd.tent.post.v0+json'
+        headers = {'Content-Type': (content_type + '; type="' +
+                                    post.post_type + '"')}
+        data_dict = {'type': post.post_type, 'content': post.content}
+        return requests.post(url, data=json.dumps(data_dict), headers=headers)
 
     def authorization_request(self):
         oauth_auth = self.get_server()['urls']['oauth_auth']

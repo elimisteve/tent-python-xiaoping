@@ -1,3 +1,2 @@
 *.pyc
-data_for_testing
-data_for_example
+config.py

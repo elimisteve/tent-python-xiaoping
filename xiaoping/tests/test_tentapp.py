@@ -1,19 +1,8 @@
-import os
-import sys
 import unittest
 
+import config
 import registration
 from tentapp import TentApp
-
-
-file_path = os.path.abspath(__file__)
-project_path = os.path.dirname(os.path.dirname(os.path.dirname(file_path)))
-
-entity_path = os.path.join(project_path, 'data_for_testing', 'entity_url')
-entity_url = open(entity_path).read().rstrip()
-
-info_path = os.path.join(project_path, 'data_for_testing', 'registration.json')
-registration_json = open(info_path).read()
 
 
 class FunctionalTentAppTests(unittest.TestCase):
@@ -21,7 +10,7 @@ class FunctionalTentAppTests(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         global app
-        app = TentApp(entity_url, registration_json)
+        app = TentApp(config.test_entity, 'Xiaoping Tester')
         link = app.start_setup()
         print 'Go to the link, click accept, and enter the "code" part'
         print 'of the url argument here.'

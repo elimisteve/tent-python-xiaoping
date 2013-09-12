@@ -4,21 +4,18 @@ Xiaoping is a Python client library for [Tent](https://tent.io) v0.3. I'm writin
 
 # Status
 
-Partially complete. Only implements a very limited subset of Tent client functionality.
-
-# Setup
-
-    $ pip install -r requirements.txt
+Working but fragile. Not ready for production.
 
 # Test Setup
 
-Testing requires an entity under your control (here `https://example.com/`). It currently makes changes to that entity such as creating app posts.
+Testing requires a Tent entity under your control. It currently makes changes to that entity such as creating app and status posts.
 
-    $ mkdir data_for_testing
-    $ echo https://example.com/ > data_for_testing/entity_url
-    $ cp sample_registration.json data_for_testing/registration.json
+One place to create a Tent entity is [cupcake.io](https://cupcake.io/). After you have a Tent entity run:
 
-Change "redirect_uri" in `registration.json` to a URL under your control.
+    $ pip install -r requirements.txt
+    $ cp example_config.py config.py
+
+And set the `test_entity` variable in `config.py`.
 
 # Run Tests
 

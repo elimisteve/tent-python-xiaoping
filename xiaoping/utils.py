@@ -7,7 +7,7 @@ class GeneralUtility:
     # A wrapper around PyHawk's header creator and requests.get/requests.post
     # to make them easy to use within Xiaoping.
     def make_request(self, url, method, headers=None, data=None):
-        if headers == None:
+        if headers is None:
             headers = []
         headers['Authorization'] = self.make_auth_header(url, method)
         if method.upper() == 'GET':
