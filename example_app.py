@@ -4,7 +4,7 @@ import sys
 
 import config
 from xiaoping.tentapp import TentApp
-from xiaoping.posts import Post
+from xiaoping.posts import AppPost, Post
 
 
 ###############################################################################
@@ -39,7 +39,9 @@ from xiaoping.posts import Post
 ###############################################################################
 
 
-app = TentApp(config.example_app_entity, 'Xiaoping Example App')
+app_post = AppPost('Xiaoping Example App',
+                   write=['https://tent.io/types/status/v0'])
+app = TentApp(config.example_app_entity, app_post)
 go_to_me = app.start_setup()
 print 'Now you need to go to:'
 print ''
@@ -59,12 +61,11 @@ app.finish_setup(code)
 ###############################################################################
 
 
-status_post = Post('https://tent.io/types/status/v0#',
-                   {'text': raw_input('Type your status post: ')})
+status_type = 'https://tent.io/types/status/v0#'
+status_post = Post(status_type, {'text': raw_input('Type your status post: ')})
 app.create_post(status_post)
 
 posts_list = app.get_posts_list()
-status_type = 'https://tent.io/types/status/v0#'
 status_posts = [i for i in posts_list if i['type'] == status_type]
 
 for i in status_posts[:5]:

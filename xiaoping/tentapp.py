@@ -11,11 +11,11 @@ from utils import GeneralUtility
 
 class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
 
-    def __init__(self, entity_url, app_name):
+    def __init__(self, entity_url, app_post):
 
         # Initial info to set up the app.
         self.entity_url = entity_url
-        self.name = app_name
+        self.app_post = app_post
 
         # These will get filled in as we go through registration.
         self.discovery_attachment = None

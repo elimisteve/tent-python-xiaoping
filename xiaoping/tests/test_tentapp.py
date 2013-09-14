@@ -1,7 +1,7 @@
 import unittest
 
 import config
-from posts import Post
+from posts import AppPost, Post
 from tentapp import TentApp
 
 
@@ -10,7 +10,9 @@ class FunctionalTentAppTests(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         global app
-        app = TentApp(config.test_entity, 'Xiaoping Tester')
+        app_post = AppPost('Xiaoping Test App',
+                           write=['https://tent.io/types/status/v0'])
+        app = TentApp(config.test_entity, app_post)
         link = app.start_setup()
         print 'Go to the link, click accept, and enter the "code" part'
         print 'of the url argument here.'

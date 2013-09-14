@@ -8,6 +8,20 @@ class Post:
         self.content = content
 
 
+class AppPost:
+
+    def __init__(self, app_name, read=None, write=None,
+                 url='https://app.example.com',
+                 redirect_url='https://app.example.com'):
+        self.post_type = 'https://tent.io/types/app/v0#'
+        self.content = {'name': app_name,
+                        'scopes': ['permissions'],
+                        'url': url,
+                        'types': {'read': read,
+                                  'write': write},
+                        'redirect_uri': redirect_url}
+
+
 class PostUtility:
 
     def create_post(self, post):
