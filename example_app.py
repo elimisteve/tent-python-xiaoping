@@ -3,10 +3,8 @@ import os
 import sys
 
 import config
-project_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.join(project_path, 'xiaoping'))
-from tentapp import TentApp
-from posts import Post
+from xiaoping.tentapp import TentApp
+from xiaoping.posts import Post
 
 
 ###############################################################################
