@@ -57,7 +57,6 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
 
     def finish_setup(self, code):
 
-        import ipdb; ipdb.set_trace() # ------------------------ #
         self.id_value = self.credentials_attachment['post']['id']
         hawk_key = self.credentials_attachment['post']['content']['hawk_key']
         self.hawk_key = hawk_key.encode('ascii')
