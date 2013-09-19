@@ -34,7 +34,7 @@ class RegistrationHelper:
 
     def authorization_request(self):
         oauth_auth = self.get_server()['urls']['oauth_auth']
-        temp_app_id = self.reg_json['post']['id']
+        temp_app_id = self.reg_attachment['post']['id']
         payload = {'client_id': temp_app_id}
         return requests.get(oauth_auth, params=payload)
 

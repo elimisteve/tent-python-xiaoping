@@ -21,7 +21,7 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
         self.discovery_attachment = None
         self.reg_header = None  # Header of the registration response.
         self.reg_attachment = None  # JSON of the registration response.
-        self.credentials = None
+        self.credentials_attachment = None
         self.token_header = None
         self.token_attachment = None
 
@@ -43,8 +43,8 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
         ### Registration
         response = self.register()
         self.reg_header = dict(response.headers)
-        self.reg_json = json.loads(response.text)
-        self.app_id = self.reg_json['post']['id']
+        self.reg_attachment = json.loads(response.text)
+        self.app_id = self.reg_attachment['post']['id']
 
         ### Get credentials
         credentials_link = self.get_link_from_header(self.reg_header)
@@ -57,6 +57,7 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
 
     def finish_setup(self, code):
 
+        import ipdb; ipdb.set_trace() # ------------------------ #
         self.id_value = self.credentials_attachment['post']['id']
         hawk_key = self.credentials_attachment['post']['content']['hawk_key']
         self.hawk_key = hawk_key.encode('ascii')
