@@ -26,7 +26,7 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
         self.token_attachment = None
 
         self.id_value = ''
-        self.hawk_key = ''
+        self.hawk_key = ''  # Keep this ascii, not unicode.
         self.app_id = None
 
     # Creates an App post on the server and begins filling out this object's
