@@ -44,4 +44,4 @@ class GeneralUtility:
     def get_server(self):
         # TODO Should iterate through servers_list
         # in case there's more than one.
-        return self.discovery_attachment['post']['content']['servers'][0]
+        return self.meta_post['post']['content']['servers'][0]

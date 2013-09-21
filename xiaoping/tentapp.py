@@ -18,11 +18,9 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
         self.app_post = app_post
 
         # These will get filled in as we go through registration.
-        self.discovery_attachment = None
-        self.reg_header = None  # Header of the registration response.
-        self.reg_attachment = None  # JSON of the registration response.
+        self.meta_post = None
+        self.reg_attachment = None
         self.credentials_attachment = None
-        self.token_header = None
         self.token_attachment = None
 
         self.id_value = ''
@@ -38,16 +36,16 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
         ### Discovery
         response1 = requests.get(self.entity_url)
         response2 = requests.get(self.discover(response1))
-        self.discovery_attachment = json.loads(response2.text)
+        self.meta_post = json.loads(response2.text)
 
         ### Registration
         response = self.register()
-        self.reg_header = dict(response.headers)
+        registration_header = dict(response.headers)
         self.reg_attachment = json.loads(response.text)
         self.app_id = self.reg_attachment['post']['id']
 
         ### Get credentials
-        credentials_link = self.get_link_from_header(self.reg_header)
+        credentials_link = self.get_link_from_header(registration_header)
         response = requests.get(credentials_link)
         self.credentials_attachment = json.loads(response.text)
 
@@ -63,7 +61,6 @@ class TentApp(RegistrationHelper, PostUtility, GeneralUtility):
 
         ### Access Token Request
         response = self.access_token_request(code)
-        self.token_header = dict(response.headers)
         self.token_attachment = json.loads(response.text)
         self.id_value = self.token_attachment['access_token']
         self.hawk_key = self.token_attachment['hawk_key'].encode('ascii')
