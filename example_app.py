@@ -63,7 +63,7 @@ status_type = 'https://tent.io/types/status/v0#'
 status_post = Post(status_type, {'text': raw_input('Type your status post: ')})
 app.create_post(status_post)
 
-for i in app.get_posts_list({'type': status_type, 'limit': 5}):
+for i in app.get_posts_list({'types': status_type, 'limit': 5}):
     text = i['content']['text']
 
     unix_time_in_s = i['published_at']/1000.0
