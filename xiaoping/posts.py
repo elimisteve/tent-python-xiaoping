@@ -26,12 +26,15 @@ class AppPost:
 
 class PostUtility:
 
-    def create_post(self, post):
+    def create_post(self, post, **properties):
         url = self.get_server()['urls']['new_post']
         content_type = 'application/vnd.tent.post.v0+json'
         headers = {'Content-Type': (content_type + '; type="' +
                                     post.post_type + '"')}
-        data_dict = {'type': post.post_type, 'content': post.content}
+        data_dict = {'type': post.post_type,
+                     'content': post.content}
+        for i in properties:
+            data_dict[i] = properties[i]
         data = json.dumps(data_dict)
         return self.make_request(url, 'POST', headers, data)
 

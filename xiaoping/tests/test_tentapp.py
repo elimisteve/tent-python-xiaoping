@@ -55,8 +55,9 @@ class FunctionalTentAppTests(unittest.TestCase):
 
     def test_post_status(self):
         status_post = Post('https://tent.io/types/status/v0#',
-                           {'text': 'Test post.'})
-        response = app.create_post(status_post)
+                           {'text': 'Private test post.'})
+        permissions = {'public': False, 'entities': [config.TEST_ENTITY]}
+        response = app.create_post(status_post, permissions=permissions)
         self.assertTrue(response)
 
     @classmethod
