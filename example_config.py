@@ -1,3 +1,9 @@
-example_app_entity = ''
+EXAMPLE_APP_ENTITY = 'https://example.com'
 
-test_entity = ''
+TEST_ENTITY = 'https://example.com'
+
+USE_SAUCE_FOR_TESTS = False
+SAUCE_USERNAME = ''
+SAUCE_KEY = ''
+TENT_SERVER_USERNAME = ''
+TENT_SERVER_PASSWORD = ''

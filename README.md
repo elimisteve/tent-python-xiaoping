@@ -15,7 +15,9 @@ One place to create a Tent entity is [cupcake.io](https://cupcake.io/). After yo
     $ pip install -r requirements.txt
     $ cp example_config.py config.py
 
-And set the `test_entity` variable in `config.py`.
+And set the `TEST_ENTITY` variable in `config.py`.
+
+The tests include a manual step because you have to approve the test app from your Tent server. If you're using [Cupcake](https://cupcake.io/) as your Tent server and have a [Sauce](https://saucelabs.com/) account you can use Selenium to automate this. Set `USE_SAUCE_FOR_TESTS` to `True` in `config.py` and add the information for Sauce and your Tent server.
 
 # Run Tests
 

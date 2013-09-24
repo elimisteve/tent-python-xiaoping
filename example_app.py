@@ -26,7 +26,7 @@ from xiaoping.posts import AppPost, Post
 #    $ pip install -r requirements.txt
 #    $ cp example_config.py config.py
 
-# 2. Set `example_app_entity` in `config.py`.
+# 2. Set `EXAMPLE_APP_ENTITY` in `config.py`.
 
 # 3. Run the app:
 #    $ python example_app.py
@@ -39,7 +39,7 @@ from xiaoping.posts import AppPost, Post
 
 app_post = AppPost('Xiaoping Example App',
                    write=['https://tent.io/types/status/v0'])
-app = TentApp(config.example_app_entity, app_post)
+app = TentApp(config.EXAMPLE_APP_ENTITY, app_post)
 go_to_me = app.start_setup()
 print 'Now you need to go to:'
 print ''
