@@ -1,4 +1,5 @@
 import json
+from urlparse import urljoin
 
 import bs4
 import requests
@@ -20,7 +21,7 @@ class RegistrationHelper:
         if rel_link.startswith("http"):
             link = rel_link
         else:
-            link = self.entity_url + rel_link
+            link = urljoin(self.entity_url, rel_link)
         return link
 
     def register(self):
