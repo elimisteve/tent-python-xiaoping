@@ -29,19 +29,19 @@ class PostUtility:
     def create_post(self, post, **properties):
         url = self.get_server()['urls']['new_post']
         content_type = 'application/vnd.tent.post.v0+json'
-        headers = {'Content-Type': (content_type + '; type="' +
-                                    post.post_type + '"')}
+        content_type += '; type="%s"' % post.post_type
+        headers = {'Content-Type': content_type}
         data_dict = {'type': post.post_type,
                      'content': post.content}
-        for i in properties:
-            data_dict[i] = properties[i]
+        data_dict.update(properties)
+
         data = json.dumps(data_dict)
         return self.make_request(url, 'POST', headers, data)
 
     def get_posts_list(self, params=None):
         url = self.get_server()['urls']['posts_feed']
         if params:
-            url = url + '?' + urlencode(params)
+            url += '?' + urlencode(params)
         headers = {'Accept': 'application/vnd.tent.posts-feed.v0+json'}
         response = self.make_request(url, 'GET', headers)
         attachment_dict = json.loads(response.text)
