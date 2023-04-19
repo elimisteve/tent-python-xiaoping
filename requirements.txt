@@ -1,5 +1,5 @@
 -e git+git@github.com:mozilla/PyHawk.git@60eb3f2c299975d61d732a4fc9477ee6e601644b#egg=PyHawk-dev
 beautifulsoup4==4.2.1
-requests==1.2.3
+requests==2.20.0
 selenium==2.33.0
 wsgiref==0.1.2
